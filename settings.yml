@@ -32,6 +32,10 @@ published_date_mode:
     - booru
     - disabled
   description: "Date shown in topic lists instead of the last-activity date: the date the topic was first posted. 'always' = everywhere, 'booru' = only in booru view, 'disabled' = Discourse's normal last-activity date."
+tag_pages_as_filter:
+  type: bool
+  default: true
+  description: "In booru view, open tag pages (/tag/name) as a filter search (/filter?q=tag:name) so the tag sidebar and sorting are available."
 full_width_desktop:
   type: bool
   default: true
