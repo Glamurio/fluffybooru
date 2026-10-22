@@ -24,6 +24,14 @@ hidden_tags:
   list_type: tag
   default: ""
   description: "Tags that never appear in the sidebar list (they can still be typed into the search box)."
+published_date_mode:
+  type: enum
+  default: always
+  choices:
+    - always
+    - booru
+    - disabled
+  description: "Date shown in topic lists instead of the last-activity date: the date the topic was first posted. 'always' = everywhere, 'booru' = only in booru view, 'disabled' = Discourse's normal last-activity date."
 thumbnail_min_width:
   type: integer
   default: 170

@@ -23,3 +23,4 @@ en:
   booru_loading: "Loading tags..."
   booru_no_tags: "No tags match."
   booru_load_error: "Could not load the tag list."
+  published_header: "Posted"
