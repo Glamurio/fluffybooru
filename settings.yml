@@ -36,6 +36,12 @@ full_width_desktop:
   type: bool
   default: true
   description: "In booru view on desktop, list pages (tag sidebar or thumbnail grid) use the whole window width instead of the centred, width-capped column. Topic pages are not affected."
+full_width_margin:
+  type: integer
+  default: 24
+  min: 0
+  max: 200
+  description: "Space in pixels left and right of the page when full_width_desktop is on."
 thumbnail_min_width:
   type: integer
   default: 170

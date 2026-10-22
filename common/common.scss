@@ -120,6 +120,8 @@ body.booru-mode {
         .topic-thumbnails-masonry
       ) {
       max-width: none;
+      padding-inline: #{$full_width_margin}px;
+      box-sizing: border-box;
     }
   }
 }
