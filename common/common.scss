@@ -47,6 +47,25 @@ body.booru-mode {
   }
 }
 
+// The sidebar sits inside the page's width-capped container (--d-max-width, 1110px
+// by default). Widen the container by the sidebar's width so the list keeps the
+// width it has with booru view off, instead of being squeezed.
+@media (width > 900px) {
+  body.booru-mode #main-outlet-wrapper:has(.booru-sidebar) {
+    max-width: calc(
+      var(--d-max-width) + var(--booru-sidebar-width) + 1.25em
+    );
+  }
+
+  // Discourse's own left sidebar also widens the container; keep allowing for it
+  body.booru-mode.has-sidebar-page #main-outlet-wrapper:has(.booru-sidebar) {
+    max-width: calc(
+      var(--d-sidebar-width, 0px) + var(--d-max-width) +
+        var(--booru-sidebar-width) + 1.25em
+    );
+  }
+}
+
 .booru-sidebar {
   box-sizing: border-box;
   position: sticky;
