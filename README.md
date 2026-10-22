@@ -3,7 +3,7 @@
 Optional booru-style browsing for a Discourse site: a tag sidebar on the left, booru-style tag search, and a denser
 thumbnail grid. A theme component. Version 0.1.0, **not yet run on a live Discourse** (see "Status").
 
-It is opt-in per browser. Visitors who never touch the toggle see the normal site (unless `enabled_by_default` is on).
+It is opt-in. Visitors who never touch the toggle see the normal site (unless `enabled_by_default` is on).
 
 ## What you get (when "Booru view" is on)
 
@@ -48,14 +48,25 @@ Discourse, so layout and the router/outlet behaviour are unverified. Test on a s
 Things I could not confirm from the source and want checked there:
 - that the sidebar column lines up beside the list (it relies on `before-list-area` and `#list-area` being siblings
   in one `.row.full-width`, which is what core's layout shows);
-- that the sidebar updates when you navigate between `/filter` searches (depends on `router.currentURL` being tracked);
-- that Topic Thumbnails shows the grid on `/filter`.
+- that the sidebar updates when you move between `/filter` searches (it listens for the router's `routeDidChange`);
+- that Topic Thumbnails shows the grid on `/filter`;
+- that `currentUser.fluffy_booru` arrives on the user model so the account setting is picked up (if it does not,
+  the component silently falls back to the per-browser setting).
+
+## Works better with the discourse-sorting plugin
+
+Install [`discourse-sorting`](https://github.com/Glamurio/discourse-sorting) (0.2.0 or later) and two things change.
+The component works without it, with the fallbacks noted.
+
+- **Counts within the results.** On a `/filter` search the sidebar lists the tags of *those* topics with their counts
+  in those topics, like a booru's tag column ("Counts are within these results."). Without the plugin, counts are
+  site-wide.
+- **The opt-in follows the account.** Logged-in people's on/off choice is saved on their account and applies on every
+  device. Without the plugin (and for guests) it is saved per browser.
 
 ## Known limits / next steps
 
-- **Opt-in is per browser (localStorage), not per account.** A real per-account setting needs a small server plugin
-  (a user option); the companion `discourse-sorting` repo could host it.
-- **Tag counts are site-wide**, not "within the current results" as on Gelbooru. That needs a server endpoint that
-  counts tags across a filter; planned for the plugin side.
 - No tag autocomplete inside the search box yet.
 - Mobile: the sidebar stacks above the list.
+- The in-results counts query looks at up to `discourse_sorting_tag_counts_max_topics` topics per search (default
+  50,000, plugin setting). Watch the response time on very broad searches and lower it if needed.

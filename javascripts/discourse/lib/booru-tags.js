@@ -2,14 +2,16 @@ import { ajax } from "discourse/lib/ajax";
 
 let pending;
 
-// One request per page load. /tags.json already carries topic counts.
+function hiddenTags() {
+  return new Set((settings.hidden_tags || "").split("|").filter(Boolean));
+}
+
+// All tags with site-wide topic counts. One request per page load.
 export function loadBooruTags() {
   if (!pending) {
     pending = ajax("/tags.json")
       .then((result) => {
-        const hidden = new Set(
-          (settings.hidden_tags || "").split("|").filter(Boolean)
-        );
+        const hidden = hiddenTags();
         return (result.tags || [])
           .filter(
             (tag) =>
@@ -26,4 +28,14 @@ export function loadBooruTags() {
       });
   }
   return pending;
+}
+
+// Tag counts among the topics a /filter search lists. Needs the discourse-sorting
+// plugin; rejects (404) without it, and the sidebar then keeps the site-wide counts.
+export async function loadScopedTags(query) {
+  const hidden = hiddenTags();
+  const result = await ajax("/discourse-sorting/tag-counts.json", {
+    data: { q: query },
+  });
+  return (result.tags || []).filter((tag) => !hidden.has(tag.name));
 }

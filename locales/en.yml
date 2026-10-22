@@ -16,6 +16,7 @@ en:
   booru_sort_views: "Most views"
   booru_tag_filter_placeholder: "Filter tags..."
   booru_tags_title: "Tags"
+  booru_scoped_note: "Counts are within these results."
   booru_include_tag: "Include {{tag}}"
   booru_exclude_tag: "Exclude {{tag}}"
   booru_show_more: "Show more tags"

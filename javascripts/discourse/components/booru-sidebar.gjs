@@ -2,6 +2,7 @@ import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
+import { registerDestructor } from "@ember/destroyable";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
 import DiscourseURL from "discourse/lib/url";
@@ -14,7 +15,7 @@ import {
   toBooruText,
   withOrder,
 } from "../lib/booru-query";
-import { loadBooruTags } from "../lib/booru-tags";
+import { loadBooruTags, loadScopedTags } from "../lib/booru-tags";
 
 const SORTS = [
   { value: "", key: "booru_sort_default" },
@@ -27,16 +28,27 @@ const SORTS = [
 export default class BooruSidebar extends Component {
   @service router;
 
-  @tracked tags = [];
+  @tracked tags = []; // site-wide counts
+  @tracked scoped = null; // counts within the current search, when available
   @tracked loading = true;
   @tracked failed = false;
   @tracked tagFilter = "";
   @tracked limit = settings.sidebar_page_size;
   @tracked draft = null;
+  @tracked currentQuery = "";
+
+  scopedRequest = 0;
 
   constructor() {
     super(...arguments);
+    this.currentQuery = this.readQuery();
     this.loadTags();
+    this.loadScoped();
+
+    this.router.on("routeDidChange", this.onRouteChange);
+    registerDestructor(this, () =>
+      this.router.off("routeDidChange", this.onRouteChange)
+    );
   }
 
   async loadTags() {
@@ -49,13 +61,48 @@ export default class BooruSidebar extends Component {
     }
   }
 
+  // Counts within the current search. Without the discourse-sorting plugin the
+  // request fails and the site-wide counts stay in place.
+  async loadScoped() {
+    const query = this.currentQuery;
+    const request = ++this.scopedRequest;
+
+    if (!query.trim()) {
+      this.scoped = null;
+      return;
+    }
+
+    try {
+      const tags = await loadScopedTags(query);
+      if (request === this.scopedRequest) {
+        this.scoped = tags;
+      }
+    } catch {
+      if (request === this.scopedRequest) {
+        this.scoped = null;
+      }
+    }
+  }
+
   // The q= value of the current /filter page, or "" anywhere else.
-  get currentQuery() {
+  readQuery() {
     const url = this.router.currentURL || "";
     if (!url.startsWith("/filter")) {
       return "";
     }
     return new URLSearchParams(url.split("?")[1] || "").get("q") || "";
+  }
+
+  onRouteChange = () => {
+    const query = this.readQuery();
+    if (query !== this.currentQuery) {
+      this.currentQuery = query;
+      this.loadScoped();
+    }
+  };
+
+  get listedTags() {
+    return this.scoped ?? this.tags;
   }
 
   get parts() {
@@ -93,7 +140,7 @@ export default class BooruSidebar extends Component {
   get visibleTags() {
     const used = new Set([...this.parts.include, ...this.parts.exclude]);
     const needle = this.tagFilter.trim().toLowerCase();
-    return this.tags
+    return this.listedTags
       .filter(
         (tag) => !used.has(tag.name) && (!needle || tag.name.includes(needle))
       )
@@ -101,12 +148,12 @@ export default class BooruSidebar extends Component {
   }
 
   get hasMore() {
-    const used = this.parts.include.length + this.parts.exclude.length;
+    const used = new Set([...this.parts.include, ...this.parts.exclude]);
     const needle = this.tagFilter.trim().toLowerCase();
-    const matching = needle
-      ? this.tags.filter((tag) => tag.name.includes(needle)).length
-      : this.tags.length;
-    return matching - used > this.limit;
+    const matching = this.listedTags.filter(
+      (tag) => !used.has(tag.name) && (!needle || tag.name.includes(needle))
+    );
+    return matching.length > this.limit;
   }
 
   go(parts) {
@@ -233,6 +280,9 @@ export default class BooruSidebar extends Component {
       </label>
 
       <h3 class="booru-heading">{{i18n (themePrefix "booru_tags_title")}}</h3>
+      {{#if this.scoped}}
+        <p class="booru-help">{{i18n (themePrefix "booru_scoped_note")}}</p>
+      {{/if}}
       <input
         type="search"
         class="booru-tag-filter"
