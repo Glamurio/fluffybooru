@@ -2,7 +2,7 @@ import Component from "@glimmer/component";
 import formatDate from "discourse/helpers/format-date";
 import { apiInitializer } from "discourse/lib/api";
 import { i18n } from "discourse-i18n";
-import booruState from "../lib/booru-state";
+import { showPublishedDate } from "../lib/published-date-mode";
 
 // Core's "Activity" column shows when a topic was last posted in (bumpedAt), so an
 // old story that got a reply last week looks new. This swaps it for the date the
@@ -32,20 +32,9 @@ class PublishedItem extends Component {
   </template>
 }
 
-function active() {
-  switch (settings.published_date_mode) {
-    case "always":
-      return true;
-    case "booru":
-      return booruState.enabled;
-    default:
-      return false;
-  }
-}
-
 export default apiInitializer((api) => {
   api.registerValueTransformer("topic-list-columns", ({ value: columns }) => {
-    if (active() && columns.has("activity")) {
+    if (showPublishedDate() && columns.has("activity")) {
       columns.replace("activity", {
         header: PublishedHeader,
         item: PublishedItem,
