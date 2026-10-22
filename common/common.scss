@@ -163,6 +163,7 @@ body.booru-mode {
     gap: 0.35em;
     padding: 0.1em 0;
 
+    &__include,
     &__exclude,
     &__name {
       padding: 0;
@@ -172,13 +173,19 @@ body.booru-mode {
       font: inherit;
     }
 
+    &__include,
     &__exclude {
       width: 1.2em;
+      font-weight: bold;
       color: var(--primary-medium);
+    }
 
-      &:hover {
-        color: var(--danger);
-      }
+    &__include:hover {
+      color: var(--success);
+    }
+
+    &__exclude:hover {
+      color: var(--danger);
     }
 
     &__name {

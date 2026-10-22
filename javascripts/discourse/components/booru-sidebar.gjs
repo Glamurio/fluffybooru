@@ -304,6 +304,12 @@ export default class BooruSidebar extends Component {
             <li class="booru-tag">
               <button
                 type="button"
+                class="booru-tag__include"
+                title={{i18n (themePrefix "booru_include_tag") tag=tag.name}}
+                {{on "click" (fn this.include tag.name)}}
+              >+</button>
+              <button
+                type="button"
                 class="booru-tag__exclude"
                 title={{i18n (themePrefix "booru_exclude_tag") tag=tag.name}}
                 {{on "click" (fn this.exclude tag.name)}}
