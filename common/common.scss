@@ -107,6 +107,21 @@ body.booru-mode {
         var(--booru-sidebar-width) + 1.25em
     );
   }
+
+  // Optional (setting full_width_desktop): on desktop, booru view lists use the whole
+  // window instead of the centred, width-capped column. Only list pages are affected
+  // (the tag sidebar or a thumbnail grid is present); topic pages keep their
+  // comfortable reading width.
+  @if $full_width_desktop {
+    body.booru-mode
+      #main-outlet-wrapper:has(
+        .booru-sidebar,
+        .topic-thumbnails-grid,
+        .topic-thumbnails-masonry
+      ) {
+      max-width: none;
+    }
+  }
 }
 
 .booru-sidebar {
@@ -223,12 +238,16 @@ body.booru-mode {
       color: var(--primary-medium);
     }
 
-    &__include:hover {
-      color: var(--success);
+    // the theme's --danger is a muted salmon that barely differs from the resting
+    // text colour, so the exclude button uses an explicit red
+    &__exclude:hover,
+    &__exclude:focus-visible {
+      color: #e03131;
     }
 
-    &__exclude:hover {
-      color: var(--danger);
+    &__include:hover,
+    &__include:focus-visible {
+      color: var(--success);
     }
 
     &__name {
