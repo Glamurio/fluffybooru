@@ -270,11 +270,13 @@ export default class BooruSidebar extends Component {
             (themePrefix "booru_sort_label")
           }}</span>
         <select {{on "change" this.setSort}}>
-          {{#each this.sortOptions as |option|}}
+          {{! the block param must not be called "option": a tag named like an
+              in-scope variable is compiled as a component invocation }}
+          {{#each this.sortOptions as |sort|}}
             <option
-              value={{option.value}}
-              selected={{option.selected}}
-            >{{option.label}}</option>
+              value={{sort.value}}
+              selected={{sort.selected}}
+            >{{sort.label}}</option>
           {{/each}}
         </select>
       </label>
