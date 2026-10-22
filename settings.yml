@@ -1,0 +1,32 @@
+enabled_by_default:
+  type: bool
+  default: false
+  description: "Booru view is on for people who have never touched the toggle. Anyone who has chosen on or off keeps their choice."
+sidebar_width:
+  type: integer
+  default: 280
+  min: 200
+  max: 480
+  description: "Width of the tag sidebar in pixels (desktop)."
+sidebar_page_size:
+  type: integer
+  default: 60
+  min: 10
+  max: 300
+  description: "How many tags the sidebar shows before 'show more'."
+min_tag_count:
+  type: integer
+  default: 1
+  min: 0
+  description: "Hide tags used on fewer topics than this."
+hidden_tags:
+  type: list
+  list_type: tag
+  default: ""
+  description: "Tags that never appear in the sidebar list (they can still be typed into the search box)."
+thumbnail_min_width:
+  type: integer
+  default: 170
+  min: 100
+  max: 400
+  description: "Minimum thumbnail width in pixels in booru view. Smaller means a denser grid."

@@ -1,0 +1,203 @@
+.booru-toggle-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5em;
+
+  .booru-toggle[aria-pressed="true"] {
+    background: var(--tertiary-low);
+    color: var(--tertiary);
+  }
+}
+
+body.booru-mode {
+  --booru-sidebar-width: #{$sidebar_width}px;
+  --booru-thumb-min: #{$thumbnail_min_width}px;
+
+  // sidebar next to the list: they are siblings inside the same .row
+  .list-container .row.full-width:has(> .booru-sidebar) {
+    display: grid;
+    grid-template-columns: var(--booru-sidebar-width) minmax(0, 1fr);
+    column-gap: 1.25em;
+    align-items: start;
+
+    > .booru-sidebar {
+      grid-column: 1;
+    }
+
+    > #list-area {
+      grid-column: 2;
+      min-width: 0;
+    }
+  }
+
+  // denser thumbnail grid (Topic Thumbnails "grid" mode)
+  .topic-thumbnails-grid {
+    .topic-list-body {
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax(var(--booru-thumb-min), 1fr)
+      );
+      column-gap: 4px;
+      row-gap: 4px;
+    }
+
+    .topic-list-item {
+      height: calc(var(--booru-thumb-min) * 1.15);
+    }
+  }
+}
+
+.booru-sidebar {
+  box-sizing: border-box;
+  position: sticky;
+  top: calc(var(--header-offset, 60px) + 0.5em);
+  max-height: calc(100vh - var(--header-offset, 60px) - 1em);
+  overflow-y: auto;
+  padding: 0.75em;
+  background: var(--primary-very-low);
+  border: 1px solid var(--primary-low);
+  font-size: var(--font-down-1);
+
+  .booru-search {
+    display: flex;
+    gap: 0.4em;
+
+    &__input {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+    }
+
+    &__submit {
+      margin: 0;
+    }
+  }
+
+  .booru-help {
+    margin: 0.4em 0 0.75em;
+    color: var(--primary-medium);
+  }
+
+  .booru-heading {
+    margin: 0.75em 0 0.35em;
+    font-size: var(--font-down-1);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--primary-medium);
+  }
+
+  .booru-chips,
+  .booru-tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .booru-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3em;
+  }
+
+  .booru-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    padding: 0.15em 0.5em;
+    border: 1px solid currentcolor;
+    border-radius: 1em;
+    background: transparent;
+    cursor: pointer;
+
+    &--include {
+      color: var(--success);
+    }
+
+    &--exclude {
+      color: var(--danger);
+    }
+
+    &__x {
+      opacity: 0.6;
+    }
+  }
+
+  .booru-sort {
+    display: block;
+
+    select {
+      width: 100%;
+      margin: 0;
+    }
+  }
+
+  .booru-tag-filter {
+    width: 100%;
+    margin: 0 0 0.4em;
+    box-sizing: border-box;
+  }
+
+  .booru-tag {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35em;
+    padding: 0.1em 0;
+
+    &__exclude,
+    &__name {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    &__exclude {
+      width: 1.2em;
+      color: var(--primary-medium);
+
+      &:hover {
+        color: var(--danger);
+      }
+    }
+
+    &__name {
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+      overflow-wrap: anywhere;
+      color: var(--tertiary);
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &__count {
+      color: var(--primary-medium);
+    }
+  }
+
+  .booru-more {
+    width: 100%;
+    margin-top: 0.5em;
+  }
+
+  .booru-status {
+    color: var(--primary-medium);
+  }
+}
+
+// narrow screens: sidebar sits above the list instead of beside it
+@media (width <= 900px) {
+  body.booru-mode .list-container .row.full-width:has(> .booru-sidebar) {
+    display: block;
+
+    > .booru-sidebar {
+      position: static;
+      max-height: 22em;
+      margin-bottom: 1em;
+    }
+  }
+}
