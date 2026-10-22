@@ -1,11 +1,54 @@
 .booru-toggle-wrapper {
   display: flex;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em 1em;
   margin-bottom: 0.5em;
 
-  .booru-toggle[aria-pressed="true"] {
-    background: var(--tertiary-low);
-    color: var(--tertiary);
+  .booru-toggle {
+    margin-left: auto;
+
+    &[aria-pressed="true"] {
+      background: var(--tertiary-low);
+      color: var(--tertiary);
+    }
+  }
+
+  // links back to the normal lists + New Topic, shown on /filter pages
+  .booru-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em 1em;
+
+    &__pills {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0;
+    }
+  }
+}
+
+// sort menu on the User Portfolio page, in the user navigation bar
+.user-nav .portfolio-sort {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+
+  &:not(:has(.portfolio-sort__inner)) {
+    display: none;
+  }
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0;
+  }
+
+  &__select {
+    margin: 0;
+    width: auto;
   }
 }
 

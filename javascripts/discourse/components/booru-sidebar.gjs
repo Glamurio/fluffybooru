@@ -125,6 +125,20 @@ export default class BooruSidebar extends Component {
         kind: "exclude",
         sign: "−",
       })),
+      ...this.parts.userInclude.map((name) => ({
+        name,
+        label: `u:${name}`,
+        kind: "include",
+        sign: "+",
+        user: true,
+      })),
+      ...this.parts.userExclude.map((name) => ({
+        name,
+        label: `u:${name}`,
+        kind: "exclude",
+        sign: "−",
+        user: true,
+      })),
     ];
   }
 
@@ -194,12 +208,21 @@ export default class BooruSidebar extends Component {
   }
 
   @action
-  remove(name) {
+  remove(chip) {
     const parts = this.parts;
+    if (chip.user) {
+      const keep = (n) => n.toLowerCase() !== chip.name.toLowerCase();
+      this.go({
+        ...parts,
+        userInclude: parts.userInclude.filter(keep),
+        userExclude: parts.userExclude.filter(keep),
+      });
+      return;
+    }
     this.go({
       ...parts,
-      include: parts.include.filter((n) => n !== name),
-      exclude: parts.exclude.filter((n) => n !== name),
+      include: parts.include.filter((n) => n !== chip.name),
+      exclude: parts.exclude.filter((n) => n !== chip.name),
     });
   }
 
@@ -253,10 +276,10 @@ export default class BooruSidebar extends Component {
                   type="button"
                   class="booru-chip booru-chip--{{chip.kind}}"
                   title={{i18n (themePrefix "booru_remove_tag") tag=chip.name}}
-                  {{on "click" (fn this.remove chip.name)}}
+                  {{on "click" (fn this.remove chip)}}
                 >
                   <span class="booru-chip__sign">{{chip.sign}}</span>
-                  {{chip.name}}
+                  {{if chip.label chip.label chip.name}}
                   <span class="booru-chip__x" aria-hidden="true">×</span>
                 </button>
               </li>

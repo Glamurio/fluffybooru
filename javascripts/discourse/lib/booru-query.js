@@ -1,61 +1,87 @@
 // Translates between Discourse's /filter query language and a booru-style search string.
 //
-//   filter query:   tag:foal tag:crying -tag:death order:created-asc
-//   booru text:     foal crying -death order:created-asc
+//   filter query:   tag:foal tag:crying -tag:death created-by:kami order:created-asc
+//   booru text:     foal crying -death u:kami order:created-asc
 //
-// Only plain single-tag terms are understood as include/exclude. Anything else
-// (tag:a,b  -tag:a+b  category:x  user:y  order:...) is kept untouched in `other`.
+// Plain single-tag terms are include/exclude tags. `created-by:name` (the topic's
+// author) is the "user tag": `u:name` / `user:name` in the search box, `-u:name` to
+// leave someone out. Several included users mean "any of them" (created-by:a,b).
+// Anything else (tag:a,b  -tag:a+b  category:x  order:...) is kept untouched in `other`.
 
 const TAG_TERM = /^(-)?tags?:([^\s,+]+(?:\+[^\s,+]+)*)$/i;
+const USER_FILTER_TERM = /^(-)?created-by:@?([^\s+]+)$/i;
+const USER_BOORU_TERM = /^(-)?(?:u|user):@?([^\s,:]+)$/i;
 
 export function parseFilterQuery(q = "") {
-  const include = [];
-  const exclude = [];
-  const other = [];
+  const parts = emptyParts();
 
   for (const token of q.trim().split(/\s+/).filter(Boolean)) {
-    const match = token.match(TAG_TERM);
-    if (match && !match[1]) {
-      include.push(...match[2].split("+"));
-    } else if (match && match[1] && !match[2].includes("+")) {
-      exclude.push(match[2]);
+    const tag = token.match(TAG_TERM);
+    const user = token.match(USER_FILTER_TERM);
+
+    if (tag && !tag[1]) {
+      parts.include.push(...tag[2].split("+"));
+    } else if (tag && tag[1] && !tag[2].includes("+")) {
+      parts.exclude.push(tag[2]);
+    } else if (user) {
+      const names = user[2].split(",").filter(Boolean);
+      (user[1] ? parts.userExclude : parts.userInclude).push(...names);
     } else {
-      other.push(token);
+      parts.other.push(token);
     }
   }
 
-  return { include: unique(include), exclude: unique(exclude), other };
+  return dedupe(parts);
 }
 
-export function serializeFilterQuery({ include, exclude, other }) {
-  return [
+export function serializeFilterQuery(parts) {
+  const { include, exclude, other } = withDefaults(parts);
+  const terms = [
     ...other,
     ...include.map((name) => `tag:${name}`),
     ...exclude.map((name) => `-tag:${name}`),
-  ].join(" ");
+  ];
+
+  const { userInclude, userExclude } = withDefaults(parts);
+  if (userInclude.length) {
+    terms.push(`created-by:${userInclude.join(",")}`);
+  }
+  terms.push(...userExclude.map((name) => `-created-by:${name}`));
+
+  return terms.join(" ");
 }
 
-// "foal crying -death order:created" -> filter query parts
+// "foal crying -death u:kami order:created" -> filter query parts
 export function parseBooruText(text = "") {
-  const include = [];
-  const exclude = [];
-  const other = [];
+  const parts = emptyParts();
 
   for (const token of text.trim().split(/\s+/).filter(Boolean)) {
-    if (token.includes(":")) {
-      other.push(token);
+    const user = token.match(USER_BOORU_TERM);
+
+    if (user) {
+      (user[1] ? parts.userExclude : parts.userInclude).push(user[2]);
+    } else if (token.includes(":")) {
+      parts.other.push(token);
     } else if (token.startsWith("-") && token.length > 1) {
-      exclude.push(token.slice(1));
+      parts.exclude.push(token.slice(1));
     } else {
-      include.push(token);
+      parts.include.push(token);
     }
   }
 
-  return { include: unique(include), exclude: unique(exclude), other };
+  return dedupe(parts);
 }
 
-export function toBooruText({ include, exclude, other }) {
-  return [...include, ...exclude.map((name) => `-${name}`), ...other].join(" ");
+export function toBooruText(parts) {
+  const { include, exclude, userInclude, userExclude, other } =
+    withDefaults(parts);
+  return [
+    ...include,
+    ...exclude.map((name) => `-${name}`),
+    ...userInclude.map((name) => `u:${name}`),
+    ...userExclude.map((name) => `-u:${name}`),
+    ...other,
+  ].join(" ");
 }
 
 export function getOrder(parts) {
@@ -71,6 +97,43 @@ export function withOrder(parts, order) {
   return { ...parts, other };
 }
 
+function emptyParts() {
+  return {
+    include: [],
+    exclude: [],
+    userInclude: [],
+    userExclude: [],
+    other: [],
+  };
+}
+
+function withDefaults(parts) {
+  return { ...emptyParts(), ...parts };
+}
+
+function dedupe(parts) {
+  return {
+    ...parts,
+    include: unique(parts.include),
+    exclude: unique(parts.exclude),
+    userInclude: uniqueNames(parts.userInclude),
+    userExclude: uniqueNames(parts.userExclude),
+  };
+}
+
 function unique(list) {
   return [...new Set(list)];
+}
+
+// usernames are case-insensitive: keep the first spelling
+function uniqueNames(list) {
+  const seen = new Set();
+  return list.filter((name) => {
+    const key = name.toLowerCase();
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
 }
