@@ -52,3 +52,13 @@ thumbnail_min_width:
   min: 100
   max: 400
   description: "Minimum thumbnail width in pixels in booru view. Smaller means a denser grid."
+fit_masonry_to_text:
+  type: bool
+  default: true
+  description: "Make cards in the masonry thumbnail layout tall enough for their tags and title, so long tag lists no longer spill onto the card below. Applies to everyone, not only booru view."
+masonry_min_image_height:
+  type: integer
+  default: 120
+  min: 0
+  max: 400
+  description: "When a card has to be made taller for its text, the image keeps at least this many pixels of height (or its natural height if smaller). Only used when fit_masonry_to_text is on."

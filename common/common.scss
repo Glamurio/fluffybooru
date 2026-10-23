@@ -279,6 +279,20 @@ body.booru-mode {
   }
 }
 
+// Topic Thumbnails (masonry) gives each card a fixed height that assumes a short title
+// block, so cards with many tags spill onto the card below. javascripts/discourse/lib/
+// masonry-fit.js measures the text and sets these three variables; with no variables
+// set (setting off, or nothing to fix) each rule below equals the component's own.
+// The extra class in the selectors makes these win over the component's rules.
+.topic-list.topic-thumbnails-masonry {
+  height: calc(var(--masonry-tallest-column) + var(--booru-fit-tallest, 0px));
+
+  .topic-list-item {
+    height: calc(var(--masonry-height) + var(--booru-fit-extra, 0px));
+    top: calc(var(--masonry-height-above) + var(--booru-fit-above, 0px));
+  }
+}
+
 // narrow screens: sidebar sits above the list instead of beside it
 @media (width <= 900px) {
   body.booru-mode .list-container .row.full-width:has(> .booru-sidebar) {
