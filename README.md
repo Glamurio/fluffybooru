@@ -44,6 +44,8 @@ then add the component to your active theme.
 | `fit_masonry_to_text` | on | Stretch masonry cards so long tag lists fit |
 | `masonry_min_image_height` | 120 | Image height kept when a card is stretched, px |
 
+Tags in a tag group that only some groups may use are listed in the sidebar only to people who may use them (admins always; needs the discourse-sorting plugin).
+
 ## Status
 
 Checked: all JS/templates parse (including decorators), SCSS compiles, YAML/JSON parse, and the query translation
