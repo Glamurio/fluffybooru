@@ -1,5 +1,6 @@
 import { apiInitializer } from "discourse/lib/api";
 import { addSearchThumbnails } from "../lib/search-thumbnails";
+import { watchMainOutlet } from "../lib/watch-outlet";
 
 // Topic images on the full-page search results. See lib/search-thumbnails.js.
 export default apiInitializer((api) => {
@@ -25,11 +26,6 @@ export default apiInitializer((api) => {
   api.onPageChange(schedule);
 
   // results arrive after the page renders, and more are appended as you scroll
-  const outlet = document.getElementById("main-outlet");
-  if (outlet) {
-    new MutationObserver(schedule).observe(outlet, {
-      childList: true,
-      subtree: true,
-    });
-  }
+  watchMainOutlet(schedule);
+  schedule();
 });

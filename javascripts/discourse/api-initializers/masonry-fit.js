@@ -1,5 +1,6 @@
 import { apiInitializer } from "discourse/lib/api";
 import { fitMasonry } from "../lib/masonry-fit";
+import { watchMainOutlet } from "../lib/watch-outlet";
 
 // Keeps cards in Topic Thumbnails' masonry layout tall enough for their tags and title
 // (see lib/masonry-fit.js). Runs for everyone, not only in booru view, because the
@@ -49,11 +50,5 @@ export default apiInitializer((api) => {
   document.fonts?.ready.then(schedule);
 
   // the list is created after the route renders; catch it appearing
-  const outlet = document.getElementById("main-outlet");
-  if (outlet) {
-    new MutationObserver(schedule).observe(outlet, {
-      childList: true,
-      subtree: true,
-    });
-  }
+  watchMainOutlet(schedule);
 });
