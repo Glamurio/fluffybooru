@@ -20,6 +20,11 @@ It is opt-in. Visitors who never touch the toggle see the normal site (unless `e
 - **Images on the search page** (everyone): `/search` results have no pictures in core, so this fetches them for the
   results shown (`/latest.json?topic_ids=…`, 30 per request, only topics the person can see) and puts a square
   thumbnail on the right of each result (`search_thumbnails`, `search_thumbnail_size`).
+- **"New this week" strip** (everyone, once `new_strip_audience` is widened): a row of tiles above Latest, New, Unread
+  and Top with topics created in the last week, so new work is not buried under old threads that keep getting
+  bumped. Tiles are picked from the whole week (default: a fresh shuffle each hour, so Monday's work gets as much
+  exposure as this morning's; or newest / most liked), skip topics the person has already read and chosen
+  categories, and use the topic image or the title on a coloured block. Settings: `new_strip_*`.
 
 It builds on Discourse's own `/filter` page (query language: `tag:a tag:b -tag:c order:created-asc`), so results,
 permissions and pagination are all core behaviour. Searches are normal URLs you can bookmark and share.
@@ -46,6 +51,13 @@ then add the component to your active theme.
 | `thumbnail_min_width` | 170 | Thumbnail minimum width in px |
 | `fit_masonry_to_text` | on | Stretch masonry cards so long tag lists fit |
 | `masonry_min_image_height` | 120 | Image height kept when a card is stretched, px |
+| `new_strip_audience` | admins | Who sees the new-this-week strip: admins, staff or everyone |
+| `new_strip_enabled` | on | The strip itself |
+| `new_strip_count` / `new_strip_days` | 8 / 7 | Tiles shown / how many days count as new |
+| `new_strip_order` | shuffle | shuffle, newest or popular |
+| `new_strip_hide_seen` | on | Leave out topics a logged-in person has read |
+| `new_strip_exclude_categories` | none | Categories kept out of the strip |
+| `new_strip_title`, `new_strip_tile_size` | New this week, 150 | Heading and minimum tile width |
 | `search_thumbnails` | on | Show each topic's image on the search page |
 | `search_thumbnail_size` | 120 | Search thumbnail size in px (cropped square) |
 

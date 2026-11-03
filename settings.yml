@@ -72,3 +72,55 @@ search_thumbnail_size:
   min: 60
   max: 300
   description: "Width and height of the search page thumbnails in pixels (they are cropped square)."
+new_strip_audience:
+  type: enum
+  default: admins
+  choices:
+    - admins
+    - staff
+    - everyone
+  description: "Who sees the 'new this week' strip. Starts on admins so you can check how it looks; switch to everyone when happy. Off for nobody is not an option: use new_strip_enabled."
+new_strip_enabled:
+  type: bool
+  default: true
+  description: "Show a strip of this week's new topics above the topic lists (Latest, New, Unread, Top)."
+new_strip_title:
+  type: string
+  default: "New this week"
+  description: "Heading of the strip. Empty for none."
+new_strip_count:
+  type: integer
+  default: 8
+  min: 1
+  max: 24
+  description: "How many tiles."
+new_strip_days:
+  type: integer
+  default: 7
+  min: 1
+  max: 30
+  description: "A topic counts as new for this many days after it was created."
+new_strip_order:
+  type: enum
+  default: shuffle
+  choices:
+    - shuffle
+    - newest
+    - popular
+  description: "Which of the week's topics fill the tiles. shuffle: a different selection every hour, so Monday's work gets as much exposure as this morning's. newest: strictly the latest. popular: most liked."
+new_strip_hide_seen:
+  type: bool
+  default: true
+  description: "For logged-in people, leave out topics they have already read."
+new_strip_exclude_categories:
+  type: list
+  list_type: category
+  default: ""
+  description: "Categories that never appear in the strip."
+new_strip_tile_size:
+  type: integer
+  default: 150
+  min: 90
+  max: 300
+  description: "Minimum tile width in pixels; tiles grow to fill the row."
+
