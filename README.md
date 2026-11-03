@@ -77,3 +77,12 @@ The component works without it, with the fallbacks noted.
 - Mobile: the sidebar stacks above the list.
 - The in-results counts query looks at up to `discourse_sorting_tag_counts_max_topics` topics per search (default
   50,000, plugin setting). Watch the response time on very broad searches and lower it if needed.
+
+## Temporary donation banner
+
+Stand-in for the discourse-sorting plugin's donation tracker, so it can go live without a server rebuild. A
+progress bar above topic lists with an amount you type in (`donation_banner_*` settings). Off by default, admins
+only until you widen it, and it switches itself off when the plugin's own thermometer is enabled. To remove it
+later: delete the `donation_banner_*` block in `settings.yml`, `javascripts/discourse/api-initializers/donation-banner.js`,
+`javascripts/discourse/components/donation-banner.gjs` and the `.fcom-donation-banner` block in `common/common.scss`.
+

@@ -62,3 +62,67 @@ masonry_min_image_height:
   min: 0
   max: 400
   description: "When a card has to be made taller for its text, the image keeps at least this many pixels of height (or its natural height if smaller). Only used when fit_masonry_to_text is on."
+
+# --- TEMPORARY donation banner -------------------------------------------------------
+# Stand-in until the discourse-sorting plugin's donation tracker is deployed. It shows
+# a thermometer with an amount you type in yourself. It switches itself off as soon as
+# the plugin's own `discourse_sorting_donations_enabled` is on, so remove this whole
+# block (plus donation-banner.js / .gjs and its SCSS) once the plugin is live.
+donation_banner_enabled:
+  type: bool
+  default: false
+  description: "Show the temporary donation banner above topic lists."
+donation_banner_audience:
+  type: enum
+  default: admins
+  choices:
+    - admins
+    - staff
+    - everyone
+  description: "Who sees it. Keep it on admins while you check how it looks."
+donation_banner_goal:
+  type: integer
+  default: 50
+  min: 1
+  description: "Monthly goal, in whole currency units."
+donation_banner_raised:
+  type: float
+  default: 0
+  min: 0
+  description: "Raised so far. You update this by hand (for example on the 1st of the month, back to 0)."
+donation_banner_currency_symbol:
+  type: string
+  default: "$"
+  description: "Symbol written before the amounts, for example $ or €."
+donation_banner_title:
+  type: string
+  default: "Server costs this month"
+  description: "Heading."
+donation_banner_message:
+  type: string
+  default: ""
+  description: "Optional sentence under the heading, for example what the money pays for."
+donation_banner_progress_text:
+  type: string
+  default: "{raised} of {goal}"
+  description: "Amounts line. {raised} and {goal} are replaced with the amounts."
+donation_banner_percent_text:
+  type: string
+  default: "{percent}% of this month's goal"
+  description: "Line under the bar. {percent} is replaced with the percentage."
+donation_banner_reached_text:
+  type: string
+  default: "Goal reached this month. Thank you!"
+  description: "Shown instead of the percentage once the goal is reached."
+donation_banner_button_text:
+  type: string
+  default: "Donate"
+  description: "Label of the button."
+donation_banner_url:
+  type: string
+  default: "https://ko-fi.com/fcom"
+  description: "Where the title, the bar and the button lead. Empty for no link and no button."
+donation_banner_dismissible:
+  type: bool
+  default: false
+  description: "Let visitors hide it with an X for the rest of their browser session."
