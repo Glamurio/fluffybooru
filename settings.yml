@@ -62,3 +62,13 @@ masonry_min_image_height:
   min: 0
   max: 400
   description: "When a card has to be made taller for its text, the image keeps at least this many pixels of height (or its natural height if smaller). Only used when fit_masonry_to_text is on."
+search_thumbnails:
+  type: bool
+  default: true
+  description: "Show the topic's image next to each result on the search page."
+search_thumbnail_size:
+  type: integer
+  default: 120
+  min: 60
+  max: 300
+  description: "Width and height of the search page thumbnails in pixels (they are cropped square)."

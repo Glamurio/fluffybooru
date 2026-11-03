@@ -293,6 +293,33 @@ body.booru-mode {
   }
 }
 
+// Topic images on the search page (javascripts/discourse/lib/search-thumbnails.js).
+// The result row is a flex row: avatar, text, and then this on the right.
+.search-results .fps-result {
+  .fcom-search-thumb {
+    flex: 0 0 auto;
+    align-self: flex-start;
+    margin-left: 1em;
+    line-height: 0;
+
+    img {
+      display: block;
+      width: #{$search_thumbnail_size}px;
+      height: #{$search_thumbnail_size}px;
+      max-width: 25vw;
+      max-height: 25vw;
+      object-fit: cover;
+      border-radius: var(--d-border-radius, 4px);
+      background: var(--primary-very-low);
+    }
+  }
+
+  .fps-topic {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
 // narrow screens: sidebar sits above the list instead of beside it
 @media (width <= 900px) {
   body.booru-mode .list-container .row.full-width:has(> .booru-sidebar) {

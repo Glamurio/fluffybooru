@@ -17,6 +17,9 @@ It is opt-in. Visitors who never touch the toggle see the normal site (unless `e
 - **Cards that fit their tags** (everyone, not only booru view): Topic Thumbnails' masonry layout reserves a fixed
   76 px for each card's title block, so topics with many tags spilled onto the card below. This measures the text and
   makes only the cards that need it taller (`fit_masonry_to_text`, `masonry_min_image_height`).
+- **Images on the search page** (everyone): `/search` results have no pictures in core, so this fetches them for the
+  results shown (`/latest.json?topic_ids=…`, 30 per request, only topics the person can see) and puts a square
+  thumbnail on the right of each result (`search_thumbnails`, `search_thumbnail_size`).
 
 It builds on Discourse's own `/filter` page (query language: `tag:a tag:b -tag:c order:created-asc`), so results,
 permissions and pagination are all core behaviour. Searches are normal URLs you can bookmark and share.
@@ -43,6 +46,8 @@ then add the component to your active theme.
 | `thumbnail_min_width` | 170 | Thumbnail minimum width in px |
 | `fit_masonry_to_text` | on | Stretch masonry cards so long tag lists fit |
 | `masonry_min_image_height` | 120 | Image height kept when a card is stretched, px |
+| `search_thumbnails` | on | Show each topic's image on the search page |
+| `search_thumbnail_size` | 120 | Search thumbnail size in px (cropped square) |
 
 Tags in a tag group that only some groups may use are listed in the sidebar only to people who may use them (admins always; needs the discourse-sorting plugin).
 
